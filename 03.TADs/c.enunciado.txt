@@ -1,0 +1,56 @@
+Neste exercício você deverá implementar dois Tipos Abstratos de Dados (TADs) para uma empresa de carros autônomos. Utilizando Structs, você deve criar os seguintes TADs: Pessoa e Carro. Cada TAD deve seguir as especificações abaixo:
+
+    Pessoa: 
+    Pessoa(double x, double y): método construtor que recebe dois parâmetros do tipo double que representam as coordenadas (x,y) e devem ser armazenados internamente.
+    Crie métodos getX(), getY(), para retornar os valores informados no construtor e já armazenados internamente.
+    void mover(double dx, double dy): método que atualiza a posição da pessoa nos eixos x e y somando os valores de deslocamento dx e dy, respectivamente.
+
+    Carro:
+    Carro(double x, double y, double th): método construtor que recebe três parâmetros: (i) dois parâmetros do tipo double que representam as coordenadas (x,y), (ii) um ângulo (em radianos) que representa a orientação (direção) do veículo. Todos os parâmetros devem ser armazenados internamente.
+    Crie métodos getX(), getY(), getTH(), para retornar os valores informados no construtor e já armazenados internamente.
+    void girar(double w, double t):  método que atualiza a orientação do carro de acordo com os parâmetros passados: w (velocidade angular, radianos por segundo) e t (o tempo que a velocidade foi aplicada). Vamos assumir que nosso veículo consegue girar sob o próprio eixo.
+    void mover(double v, double t): método que atualiza a posição do carro nos eixos x e y de acordo com os parâmetros passados: v (magnitude do vetor velocidade, metros por segndo), t (o tempo que a velocidade foi aplicada). Atenção: lembre-se de considerar a orientação do carro no cálculo da movimentação, fazendo uma decomposição vetorial simples e usando a equação de cinemática da física. 
+    double calcular_angulo_pessoa(Pessoa* pessoa): método que calcula e retorna o ângulo para uma Pessoa passada como parâmetro. Esse ângulo é em relação à frente (orientação atual) do carro. Veja a Dica1.
+    double calcular_distancia_pessoa(Pessoa* pessoa): método que calcula e retorna a distância euclidiana para uma Pessoa passada como parâmetro.
+    bool movimentacao_permitida(Pessoa** pessoas, int n): método que recebe um array de ponteiros para Pessoas e um parâmetro que informa a quantidade de elementos nesse array. Esse método irá verificar se o veículo pode se mover (retorna True) ou não (retorna False). O veículo NÃO pode se mover se houver pelo menos uma pessoa em seu campo de visão frontal ([-45, +45]) e a menos de 5m (Dica: utilize os Itens 5 e 6). Nesse caso, antes de retornar False, deve-se imprimir umaa mensagem no seguinte formato:
+
+    Alerta! IDX1 ANG DIST
+    Alerta! IDX2 ANG DIST
+    ...
+
+    Utilize tab ('\t') para separar todos os elementos e coloque uma quebra de linha ao final. IDX é o índice da pessoa no vetor, ANG o ângulo em graus para a pessoa e DIST a distância.
+    void navegar(Pessoa** pessoas, int n, double w, double v, double t): Método responsável por fazer toda a navegação do veículo seguindo a seguinte lógica: (i) Primeiro verifica a presença de pedestres (Item 7), se a movimentação não for permitida não faz nada, caso contrário, (ii) primeiro realiza o giro (Item 3) de acordo com 'w' passado, em seguida (iii) move-se para frente (Item 4) de acordo com o 'v' passado.
+
+Como entrada serão fornecidos a posição (x, y) e orientação (theta) do carro e as posições (x, y) das pessoas na cena. Em seguida, o sistema é executado considerando os comandos informados e algumas informações devem ser impressas na tela.
+
+ATENÇÃO: Nesse exercício você não precisa implementar a função main! O objetivo é simular o caso em que você está implementando um TAD que será utilizado por outra pessoa (que conhece apenas o contrato). Dessa forma, a leitura dos dados de entrada já está implementada e você deve apenas implementar os TADs (Pessoa e Carro). Você é livre para implementar nos TADS quaisquer outros métodos não mencionados que julgar necessário.
+
+Para ilustrar, abaixo são apresentados exemplos de entrada/saída.
+
+Neste primeiro exemplo, inicialmente são passadas as informações do carro e das pessoas. Em seguida, os comandos 'c' e 's' são usados para imprimir os estados atuais do carro e das pessoas. Por fim, o comando 'p' verifica se a movimentação é permitida e imprime o booleano retornado.
+
+input=
+0.0 0.0 0.0
+6
+2.0 0.0
+0.0 1.0
+7.0 2.0
+4.0 1.0
+1.0 -2.0
+3.0 -2.0
+c
+s
+p
+
+output=
+0.00    0.00    0.00
+2.00    0.00
+0.00    1.00
+7.00    2.00
+4.00    1.00
+1.00    -2.00
+3.00    -2.00
+Alerta! 0       0.00    2.00
+Alerta! 3       14.04   4.12
+Alerta! 5       -33.69  3.61
+0
