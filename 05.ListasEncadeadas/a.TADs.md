@@ -32,6 +32,7 @@ int main() {
 Forma alternativa de guardar coleções. Cada célula/nó possui duas informações:
 - Conteúdo (valor) que se deseja armazenar
 - Referência para o elemento seguinte na cadeia
+ 
 | Arrays | Listas encadeadas |
 | ------ | ----------------- |
 | Acesso direto (índice) | Acesso sequencial |
@@ -218,4 +219,13 @@ int main() {
   
   return 0;
 }
+```
+
+## Lista duplamente encadeadas
+```cpp
+struct Node {
+  int data;
+  Node* next;
+  Node* previous;
+};
 ```
