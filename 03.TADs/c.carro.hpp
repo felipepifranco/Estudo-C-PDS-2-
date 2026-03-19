@@ -1,6 +1,6 @@
-#include <cmath>
-#include <numbers>
-#include <iostream>
+#ifndef CARRO_HPP
+#define CARRO_HPP
+
 #include "c.pessoa.hpp"
 
 using namespace std;
@@ -27,3 +27,5 @@ struct Carro{
   bool movimentacao_permitida(Pessoa** pessoas, int n);
   void navegar(Pessoa** pessoas, int n, double w, double v, double t);
 };
+
+#endif

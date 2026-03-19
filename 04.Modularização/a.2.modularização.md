@@ -84,7 +84,7 @@ int main(){
 }
 ```
 
-É possível incorporar tudo de um namespace para o escopo atual utilizando o `using namespace`
+É possível incorporar tudo de um namespace para o escopo atual utilizando o `using namespace`. Cuidado para não dar conflito!
 
 É possível "redeclarar" um namespace de modo que o novo elemento declarado seja incorporado
 ```c++
@@ -98,14 +98,14 @@ namespace Modulo1{
 }
 ```
 
-### Compilação
+# Compilação
 Em sistemas grandes, código estará distribuido em vários arquivos fontes. Logo, não é conveniente recompilar partes do proograma que não foram alteradas
 
 **Especificações (interface) x Implementação:**
 - arquivo `.hpp` -> contém a **especificação** das funçõe se tipos de dados. è a parte conhecida/importada por outros módulos
 - arquivo `.cpp` -> contém a **implementação** das funções. Ao mudar a implementação, somente esse arquivo é recompilado.
 
-Assim, ao usar bibliotecas, compila um vez e usa várias outras
+Assim, ao usar bibliotecas, compila um vez e usa várias outras. Isso é o motivo de porque TADs são boas ao realizar modificações na implementações dela: a especificação (.hpp) não muda
 
 Ao compilar arquivos `.cpp`, serão gerados arquivos `.o`, os quais serão linkados (pelo linker durante a compilação) ao arquivo principal. Essas especificações são:
 
@@ -124,7 +124,64 @@ Ligar apenas:
 g++ -o Executavel aquivo1.o arquivo2.o 
 ```
 
-### Arquivos Makefile
+Uma forma de fazer isso mais fácil é com arquivos makefile
+## hpp e cpp
+### hpp
+- include guard -> segurança para garantir que definições não foram feitas duas vezes seguidas
+
+EX CÓDIGO `.hpp`
+```c++
+#ifndef CIRCUNFERENCIA_H
+#define CIRCUNFERENCIA_H
+#include <cmath>
+
+struct Circunferencia {
+  double _x, _y;
+  double _raio;
+  Circunferencia(double, double, double);
+    double calcularArea();
+};
+
+#endif
+```
+### cpp
+- fazer o include do contrato que será implementado
+- ao implementar, utilizar a especificação (escopo) de cada método e tipo  
+- não é preciso dar include em bibliotecas já incluídas no hpp
+EX CÓDIGO `.cpp`
+```c++
+#include "Circunferencia.hpp"
+
+Circunferencia::Circunferencia(double x, double y, double raio) {
+  _x = x; // o this está imlplícito
+  _y = y;
+  _raio = raio;
+} // Note que não é necessário utilizar ;
+
+double Circunferencia::calcularArea() {
+  return M_PI * pow(_raio, 2);
+}
+```
+### main
+- incluir só o hpp
+```c++
+#include <iostream>
+#include "Circunferencia.hpp"
+
+using namespace std;
+
+int main() {
+  Circunferencia* circ = new Circunferencia(0, 0, 10);
+  cout << circ->calcularArea() << endl;
+  
+  delete circ;
+  
+  return 0;
+}
+```
+
+
+## Arquivos Makefile
 Arquivos **makefiles** funcionam como um roteiro para compilação
 - arquivos de texto especialmente formatado (tabs)
 - entrada para um utilitário Unix chamado "make"
@@ -174,6 +231,37 @@ main: main.o Ponto.o
 clean:
   rm -r main *.o
 ```
+AINDA MAIS COMPLEXO:
+
+```makefile
+# viariaveis auxiliares:
+CC=g++
+CFLAGS=-std=c++11 -Wall
+TARGET=program
+
+# diretorios auxiliares:
+BUILD_DIR = ./build # usado para definir onde vai ser criado
+SRC_DIR = ./src # usado para ver de onde vai tirar
+INCLUDE_DIR = ./include # usado para pegar arquivos fonta
+
+${BUILD_DIR}/${TARGET}: ${BUILD_DIR}/Ponto.o ${BUILD_DIR}/main.o # manda criar o Ponto.o e o main.o
+  ${CC} ${CFLAGS} ${BUILD_DIR}/*.o -o ${BUILD_DIR}/${TARGET}
+
+${BUILD_DIR}/Ponto.o: ${INCLUDE_DIR}/geometria/Ponto.hpp ${SRC_DIR}/geometria/Ponto.cpp
+  ${CC} ${CFLAGS} -I ${INCLUDE_DIR}/geometria/ -c ${SRC_DIR}/geometria/Ponto.cpp -o ${BUILD_DIR}/Ponto.o
+
+${BUILD_DIR}/main.o: ${INCLUDE_DIR}/geometria/Ponto.hpp ${SRC_DIR}/main.cpp
+${CC} ${CFLAGS} -I ${INCLUDE_DIR}/geometria/ -c ${SRC_DIR}/main.cpp -o ${BUILD_DIR}/main.o
+# Rule for cleaning files generated during compilation.
+# Call 'make clean' to use it
+clean:
+rm -f ${BUILD_DIR}/*
+```
+USAR `-c` para compilar o arquivo em um .o
+
+USAR `-I` para incluir esses arquivos .hpp
+
+USAR `-o` para nomear os arquivos outputs
 
 ### Organização 
 separação em diferentes diretórios:
