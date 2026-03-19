@@ -3,6 +3,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace std;
 
 Carro::Carro(double x, double y, double th){
   this->x = x;
@@ -10,10 +11,10 @@ Carro::Carro(double x, double y, double th){
   this->th = th;
 }
 
-double Carro::getx(){
+double Carro::getX(){
   return this->x;
 }
-double Carro::gety(){
+double Carro::getY(){
   return this->y;
 }
 double Carro::getTH(){
@@ -36,7 +37,9 @@ void Carro::mover(double v, double t){
 double Carro::calcular_angulo_pessoa(Pessoa* pessoa){
   //double tg = (pessoa->y - this->y) / (pessoa->x - this->x);
   
-  return atan2(pessoa->y - this->y, pessoa->x - this->x);
+  double tg = atan2(pessoa->y - this->y, pessoa->x - this->x);
+  double carro = this->th;
+  return tg - carro;
 }
 
 double Carro::calcular_distancia_pessoa(Pessoa* pessoa){
@@ -49,19 +52,21 @@ bool Carro::movimentacao_permitida(Pessoa** pessoas, int n){
   double graus45 = 45;
   double ang;
   double dist;
+  bool pode = true;
 
   for(int i=0; i<n; i++){
     ang = calcular_angulo_pessoa(pessoas[i]) *(180 / acos(-1.0)); // transformacao para graus
     dist = calcular_distancia_pessoa(pessoas[i]);
 
-    if( ang <= graus45 && ang >= -1*graus45){
-      if(dist <5){
-        cout << "Alerta! IDX" << i << '\t' << ang << '\t' << dist << endl;
-        return false;
-      }
-      else return true;
-    }else return true;
+    if( ang <= graus45 && ang >= -1*graus45 && dist <5){
+        cout << "Alerta! " << i << '\t' << ang << '\t' << dist << endl;
+        pode = false;
+    }
   }
+  if(pode)
+    return true;
+  else
+    return false;
 }
 
 void Carro::navegar(Pessoa** pessoas, int n, double w, double v, double t){

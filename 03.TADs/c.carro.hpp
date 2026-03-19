@@ -12,8 +12,8 @@ struct Carro{
 
   Carro(double x, double y, double th);
 
-  double getx();
-  double gety();
+  double getX();
+  double getY();
   double getTH();
 
   void girar(double w, double t);

@@ -6,10 +6,10 @@ Pessoa::Pessoa(double x, double y){
 	this->y = y;
 }
 
-double Pessoa::getx(){
+double Pessoa::getX(){
 	return this->x;
 }
-double Pessoa::gety(){
+double Pessoa::getY(){
 	return this->y;
 }
 

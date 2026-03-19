@@ -7,8 +7,8 @@ struct Pessoa{
 
 	Pessoa(double x, double y);
 
-	double getx();
-	double gety();
+	double getX();
+	double getY();
 
 	void mover(double dx, double dy);
 };  
