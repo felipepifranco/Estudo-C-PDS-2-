@@ -3,8 +3,6 @@
 
 #include "c.pessoa.hpp"
 
-using namespace std;
-
 struct Carro{
   double x;
   double y;

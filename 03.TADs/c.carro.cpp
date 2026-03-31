@@ -3,7 +3,6 @@
 #include <iostream>
 
 using namespace std;
-using namespace std;
 
 Carro::Carro(double x, double y, double th){
   this->x = x;

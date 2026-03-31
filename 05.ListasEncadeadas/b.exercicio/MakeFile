@@ -1,0 +1,16 @@
+all: main
+
+Processo.o: Processo.hpp Processo.cpp
+	g++ -Wall -c Processo.cpp -o Processo.o
+
+FilaProcessos.o: FilaProcessos.hpp Processo.hpp FilaProcessos.cpp
+	g++ -Wall -c FilaProcessos.cpp -o FilaProcessos.o
+
+main.o: Processo.hpp FilaProcessos.hpp main.cpp
+	g++ -Wall -c main.cpp -o main.o
+
+main: main.o Processo.o FilaProcessos.o
+	g++ main.o Processo.o FilaProcessos.o -o main
+
+clean:
+	rm -f *.o main
