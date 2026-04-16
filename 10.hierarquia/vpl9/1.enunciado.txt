@@ -1,0 +1,95 @@
+O objetivo deste exercício é avançar no uso de Orientação a Objetos e praticar os conceitos de Herança e Composição.
+
+Você deve implementar uma hierarquia de classes para um sistema de defesa, praticando herança, métodos virtuais puros, modificadores de acesso, e gerenciamento manual de memória.
+
+Você deve implementar cada classe de acordo com as especificações abaixo:
+Defesa (Classe Base Abstrata)
+
+    Atributos Privados: int _id, double _energia.
+
+    Método Protegido: void _consumirEnergia(double qtd): Subtrai qtd da _energia. Se o valor resultante for menor que 0, deve ser fixado em 0.
+
+    Método Público: virtual void atacar(double &danoAcumulado) = 0 (Virtual Puro).
+
+    Destrutor: Deve apenas imprimir: Defesa [_id] desativada. (seguido de quebra de linha).
+
+Canhao (Herda de Defesa)
+
+    Atributo Privado: double _intensidade.
+
+    Comportamento: O método atacar deve ser implementado e chamar _consumirEnergia para subtrair 10 unidades. O dano gerado e adicionado ao danoAcumulado é igual ao valor da _intensidade.
+
+CanhaoOrbital (Herda de Canhao)
+
+    Atributo Privado: double _multiplicadorGravitacional.
+
+    Comportamento: Sobrescreve atacar. Deve chamar explicitamente o método de ataque da classe pai (Canhao::atacar) para processar o consumo de energia e o dano base. Em seguida, o dano final (base x _multiplicadorGravitacional) deve ser adicionado ao danoAcumulado. Imprime: Ataque Orbital realizado!.
+ 
+
+LancadorMissil (Herda de Defesa)
+
+    Atributo Privado: int _misseis.
+
+    Comportamento: O método atacar consome 1 míssil (se disponível) e 5 unidades de energia. Cada míssil disparado adiciona 40 unidades ao danoAcumulado. Se _misseis for 0, o método não gera dano nem consome energia.
+
+BaseMilitar (Composição Manual)
+
+    Atributos: Defesa* _defesas[100] (Array fixo), int _qtdAtual.
+
+    Método: void adicionarDefesa(Defesa* d): Adiciona o ponteiro ao array e incrementa o contador.
+
+    Método: void defender(double &saudeInimigo): Percorre as defesas cadastradas. Cada uma ataca uma vez. O dano total acumulado no turno deve ser subtraído da saudeInimigo. Ao final, imprime: Saude Inimigo: X.XX (com duas casas decimais).Em BaseMilitar::defender declare a variavel do for como ixx.
+
+    Destrutor: Deve percorrer o array e deletar cada ponteiro individualmente para liberar a memória.
+
+
+Regra Crítica de Energia: Uma Defesa só realiza seu ataque se possuir energia maior ou igual ao custo total do ataque. Caso contrário, o ataque é ignorado, nenhum dano é causado e nenhuma energia/míssil é consumido.
+
+O código deve ser dividido obrigatoriamente em arquivos .hpp e .cpp para cada classe. Você é livre para adicionar quaisquer outros atributos ou métodos auxiliares (privados) que julgar necessário.
+
+O arquivo main.cpp deve ser responsável por orquestrar a interação com o usuário através de um laço de repetição que processa comandos via std::cin. Você deve instanciar um único objeto da classe BaseMilitar e utilizá-lo para executar as operações solicitadas. Declare o objeto BaseMilitar com o nome _b_ase_mil_itar;.
+
+Atenção: Saídas de valores reais (double) devem usar fixed e setprecision(2).
+
+Comandos e Regras de Entrada
+
+    c ID ENERGIA INTENSIDADE: Cria um Canhao e adiciona como defesa da Base.
+
+    o ID ENERGIA INTENSIDADE GRAVIDADE: Cria um CanhaoOrbital e adiciona como defesa da Base.
+
+    m ID ENERGIA QTD_MISSEIS: Cria um LancadorMissil e adiciona como defesa da Base.
+
+    d VIDA_INIMIGO: Executa a defesa da base contra a vida informada.
+
+    s: Encerra a execução, limpa a memória e finaliza o programa.
+
+Exemplos de Execução
+
+Abaixo, dois exemplos para ilustrar o comportamento esperado do sistema:
+
+Exemplo 1:
+input=
+c 1 100.00 10.00
+o 2 100.00 10.00 2.00
+d 50.00
+s
+
+output=
+Ataque Orbital realizado!
+Saude Inimigo: 20.00
+Defesa 1 desativada.
+Defesa 2 desativada.
+
+Exemplo 2:
+input=
+m 10 100.00 1
+c 20 5.00 15.00
+d 100.00
+d 100.00
+s
+
+output=
+Saude Inimigo: 45.00
+Saude Inimigo: 100.00
+Defesa 10 desativada.
+Defesa 20 desativada.
