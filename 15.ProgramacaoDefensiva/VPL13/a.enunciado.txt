@@ -1,0 +1,80 @@
+Objetivo
+
+Praticar tratamento de exceções: lançar tipos adequados da biblioteca padrão, definir uma exceção personalizada com estado e what() correto, e no main usar try/catch com ordem de handlers coerente com a hierarquia de classes de exceção.
+
+A implementação em si não é difícil. O aluno deve se atentar a onde lançar, o quê lançar e como capturar exceções.
+
+Atenção à saída: mensagens na saída padrão devem ser exatamente as indicadas. Não use acentos nem cedilha nas mensagens (ex.: invalido, quantidade, concluida).
+1) Estrutura Item
+
+Represente um item de estoque com os atributos nome e quantidade.
+2) Classe Estoque
+
+A classe deve manter uma coleção de objetos Item preservando a ordem de inserção.
+adicionar_item(nome, quantidade_inicial)
+
+    Se quantidade_inicial <= 0: lance std::invalid_argument com a mensagem exata: Erro: quantidade invalida
+    Se já existir um item com o mesmo nome: lance std::domain_error com a mensagem exata: Erro: item duplicado
+    Caso contrário: acrescente o item ao fim da coleção com a quantidade indicada.
+
+registrar_entrada(indice, quantidade)
+
+    Se quantidade <= 0: lance std::invalid_argument com a mensagem exata: Erro: quantidade invalida
+    Se indice for inválido para a coleção atual: lance std::out_of_range com a mensagem exata: Erro: indice invalido
+    Caso contrário: some quantidade ao item no índice indice.
+
+registrar_saida(indice, quantidade)
+
+    Mesmas regras de quantidade e indice que em registrar_entrada (mesmos tipos de exceção e mesmas strings).
+    Se quantidade for maior que a quantidade disponível do item no índice: lance EstoqueInsuficienteException, informando nome do item, quantidade disponível e quantidade pedida.
+
+consultar(indice)
+
+    Se indice inválido: lance std::out_of_range com a mensagem exata: Erro: indice invalido
+    Caso contrário: imprima duas linhas (sem prefixo extra):
+        Nome: <nome>
+        Quantidade: <quantidade>
+
+listar()
+
+    Se não houver itens: imprima exatamente: Estoque vazio!
+    Caso contrário: para cada item, uma linha, do menor índice ao maior, no formato:
+        [<indice>] <nome> <quantidade>
+        Exemplo: [0] parafuso 15 (um espaço entre os colchetes e o nome; um espaço entre nome e quantidade).
+
+3) Exceção personalizada EstoqueInsuficienteException
+
+    Faça com que esta classe seja um std::runtime_error. Qual a maneira correta de fazer isso?
+    Armazene os dados do item envolvido: nome do item, quantidade disponível e quantidade pedida. Os atributos devem se chamar _nome_item, _disponivel e _pedido.
+    Construtor: EstoqueInsuficienteException(nome_item, disponivel, pedido)
+    Sobrescreva o método what() para retornar exatamente: Erro: estoque insuficiente. (com ponto final). Qual a maneira correta de sobrescrever o método what()? Dica: mesmo não sendo obrigatório, é interessante usar override ao final para garantir que o método está sendo corretamente sobrescrito.
+
+Contrato de saída no main quando essa exceção for capturada:
+
+    Primeira linha: imprimir e.what() (deve ser Erro: estoque insuficiente.)
+    Segunda linha: Item: <nome do item>
+    Terceira linha: Disponivel: <disponivel>
+    Quarta linha: Pedido: <pedido>
+
+Use os getters ou membros da exceção para obter nome, disponível e pedido.
+4) main: comandos, laço e tratamento de exceções
+
+Leia comandos da entrada padrão até encontrar quit (comando termina o programa; não é obrigatório imprimir nada ao sair).
+
+Comandos (palavras em minúsculo; argumentos separados por espaço; nomes de item sem espaços — use _ se precisar):
+Comando 	Argumentos 	Comportamento
+add 	NOME QTD_INICIAL 	Chama adicionar_item. Em sucesso: imprima OK: item NOME cadastrado (use o nome recebido).
+entrada 	INDICE QTD 	Chama registrar_entrada. Em sucesso: OK: entrada concluida
+saida 	INDICE QTD 	Chama registrar_saida. Em sucesso: OK: saida concluida
+consulta 	INDICE 	Chama consultar (que imprime as duas linhas do item).
+list 	— 	Chama listar.
+quit 	— 	Encerra o laço.
+
+Para cada comando exceto list e quit, envolva a operação que pode lançar em um try. Em caso de exceção:
+
+    EstoqueInsuficienteException: saída conforme seção 3 (quatro linhas no total).
+    std::out_of_range, std::invalid_argument, std::domain_error: imprima apenas uma linha com e.what().
+
+Ordem dos catch: do tipo mais específico (sua classe derivada) para o mais geral. Não coloque catch (const std::exception& e) antes de catch (const EstoqueInsuficienteException& e), caso contrário a exceção personalizada será tratada no bloco genérico.
+
+Após tratar a exceção, o programa deve continuar lendo o próximo comando (até quit).

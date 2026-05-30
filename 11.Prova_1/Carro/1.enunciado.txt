@@ -1,0 +1,4 @@
+Modelar um automóvel
+ Quais atributos devem existir?
+ Quais métodos devem existir?
+ Onde usar Herança/Composição?

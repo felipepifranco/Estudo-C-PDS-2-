@@ -1,0 +1,119 @@
+Sua tarefa é implementar uma simulação de ecossistema em uma grade bidimensional N × M, contendo dois tipos de organismos:
+capivaras (presas) e onças (predadores). A simulação ocorre em T turnos discretos, onde cada organismo age de acordo com regras específicas de movimento e predação.
+
+O sistema deve ser capaz de carregar o estado inicial do grid a partir da entrada padrão, simular T turnos de acordo com as regras de movimento e predação, garantir que cada organismo aja no máximo uma vez por turno e imprimir o estado final do grid após todos os turnos.
+
+Organismos
+
+O sistema possui dois tipos de organismos:
+
+    Capivara (presa) - Representada pela caracter 'C'. Move-se para celulas vazias adjacentes.
+    Onça (predador) - Representada pela caractere 'O'. Prioriza a captura de capivara adjacentes antes de se mover normalmente.
+
+Células vazias são representadas por '.'
+
+Regras de Movimento
+
+Todo organismo tenta se mover para uma célula adjacente seguindo a ordem fixa de prioridade: Cima, Direita, Baixo, Esquerda.
+
+Se a célula escolhida estiver fora do grid ou ocupada, o organismo tenta a próxima direção.
+
+Se nenhuma direção for válida, o organismo permanece no lugar. O grid é limitado e nenhum organismo pode sair dele.
+
+Os organismos devem ser processados em ordem de varredura da matriz:
+
+    Linhas de cima para baixo
+    Colunas da esquerda para a direita
+
+Ou seja, o sistema percorre o grid da posição (0,0) até (N-1,M-1).
+
+Ordem de Execução
+
+Todas as onças agem primeiro, depois todas as capivarias.
+
+O estado do grid é atualizado imediatamente após cada movimento. 
+
+Lembre-se: Mesmo que o organismo seja movido para outra posição durante o processamento do grid, ele não deve agir novamente no mesmo turno.
+
+Onça: Antes de se mover normalmente, verifica as celulas adjacentes. Se houver uma capivara vizinha, move-se para essa celula e a remove do grid. 
+
+Caso contrário, comporta-se como um organismo comum.
+
+Capivara:  Move-se para a primeira célula vazia disponível conforme a ordem de prioridade acima.
+
+Estrutura de Classes
+
+Organism - Classe Base Abstrata
+
+Representa qualquer organismo do ecossistema. Define a interface comum e comportamentos compartilhados entre todas as subclasses. Nenhum objeto Organism é instanciado diretamente.
+
+Cada organismo armazena sua posição atual na grade (x, y) e uma flag moved que impede que o mesmo organismo aja mais de uma vez por turno.
+
+symbol() — retorna o caractere que representa o organismo no grid ('C' ou 'O')
+move(Grid&) — executa a ação completa do organismo no turno; cada subclasse define seu comportamento
+tryMoveToEmpty(Grid&) — tenta mover o organismo para a primeira célula vazia na ordem cima→direita→baixo→esquerda; atualiza o grid e a posição interna; compartilhado entre subclasses
+tryPredation(Grid&) — tentativa de predação sobre célula adjacente; retorna false por padrão, sobrescrito por predadores
+isPreyFor(const Organism*) — indica se este organismo é presa do predador recebido; retorna false por padrão, sobrescrito por presas
+hasMoved() / setMoved() — consulta e define a flag de movimento do turno atual
+getX() / getY() / setPosition() — acesso e atualização da posição do organismo
+
+Capybara 
+
+Herda de Organism. Representa a capivara, que apenas se move para células vazias e pode ser capturada por onças.
+
+symbol() — retorna 'C'
+isPreyFor(const Organism*) — retorna true se o predador for uma onça (symbol() == 'O')
+move(Grid&) — verifica a flag moved e delega inteiramente para tryMoveToEmpty
+
+Jaguar
+
+Herda de Organism. Representa a onça, que prioriza a captura de capivaras adjacentes antes de se mover normalmente.
+
+symbol() — retorna 'O'
+tryPredation(Grid&) — percorre as células adjacentes em ordem de prioridade; se encontrar um organismo onde isPreyFor(this) retorna true, remove-o do grid
+move(Grid&) — verifica a flag moved, tenta tryPredation primeiro; se falhar, chama tryMoveToEmpty
+
+Grid — Grade do Ecossistema
+
+Gerencia o estado compartilhado da simulação. Todos os organismos interagem com o ambiente exclusivamente através desta classe. Internamente mantém uma matriz de ponteiros Organism*, onde nullptr indica célula vazia.
+
+inBounds(x, y) — retorna true se a posição está dentro dos limites da grade
+isEmpty(x, y) — retorna true se a posição está dentro dos limites e não contém organismo
+get(x, y) — retorna o ponteiro do organismo na posição, ou nullptr
+set(x, y, Organism*) — atribui um ponteiro à célula sem deletar o conteúdo anterior
+set(Organism*) — sobrecarga que usa getX()/getY() do próprio organismo para determinar a célula destino
+clear(x, y) — limpa a célula sem deletar o organismo; usado quando um organismo se move para fora da célula
+remove(x, y) — deleta o organismo e limpa a célula; usado exclusivamente em casos de morte por predação
+resetMoved() — reseta a flag moved de todos os organismos; chamado no início de cada turno
+operator<< — imprime o estado atual da grade linha por linha, substituindo um método print()
+
+Entrega
+
+ Cada um deve obrigatoriamente entregar os arquivos:
+
+    Capybara.cpp e Capybara.h
+    Jaguar.cpp e Jaguar.h
+    Organism.cpp e Organism.h
+    Grid.cpp e Grid.h
+    main.cpp
+
+Formato de Entrada
+
+N M T
+<linha 1 do grid>
+<linha 2 do grid>
+...
+<linha N do grid>
+
+Onde N é o número de linhas, M o número de colunas e T o número de turnos. Cada célula contém 'C', 'O' ou '.'
+
+ 
+
+Formato de Saída
+
+<linha 1 do grid>
+<linha 2 do grid>
+...
+<linha N do grid>
+
+O estado final do grid após T turnos, no mesmo formato da entrada
